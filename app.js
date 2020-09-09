@@ -16,39 +16,50 @@ mongoose.connect('mongodb://localhost:27017/yelpCamp', {
     .then(() => console.log('Connected to DB!'))
     .catch(error => console.log(error.message));
 
+// schema setup
 
+var campgroundSchema = new mongoose.Schema({
+    name:String,
+    image:String
+});
 
+var Campground = mongoose.model("Campground", campgroundSchema);
 
-var campgrounds = [
-    { name: 'Salmon Creek', image: "https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Granite Hill', image: "https://images.unsplash.com/photo-1487750404521-0bc4682c48c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Salmon Creek', image: "https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Granite Hill', image: "https://images.unsplash.com/photo-1487750404521-0bc4682c48c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Salmon Creek', image: "https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Granite Hill', image: "https://images.unsplash.com/photo-1487750404521-0bc4682c48c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Salmon Creek', image: "https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Granite Hill', image: "https://images.unsplash.com/photo-1487750404521-0bc4682c48c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Salmon Creek', image: "https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Granite Hill', image: "https://images.unsplash.com/photo-1487750404521-0bc4682c48c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Salmon Creek', image: "https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Granite Hill', image: "https://images.unsplash.com/photo-1487750404521-0bc4682c48c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" },
-    { name: 'Mine', image: "https://images.unsplash.com/photo-1490452322586-70484206da38?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" }
-]
+// Campground.create({name: 'Granite Hill', image: "https://images.unsplash.com/photo-1487750404521-0bc4682c48c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" }, function(err, campground){
+//     if(err){
+//         console.log(err)
+//     } else{
+//         console.log(campground);
+//     }
+// })
 
 app.get('/', function (req, res) {
     res.render('landing')
 })
 
 app.get("/campgrounds", function (req, res) {
-    res.render('campgrounds', { campgrounds: campgrounds });
+    Campground.find({}, function(err, allCampgrounds){
+        if(err){
+            console.log(err);
+        } else {
+            res.render('campgrounds', { campgrounds: allCampgrounds });
+        }
+    })
 })
 
 app.post("/campgrounds", function (req, res) {
     var name = req.body.name;
     var image = req.body.image;
     var newCampground = {name:name, image:image}
-    campgrounds.push(newCampground)
-    res.redirect('campgrounds')
+    Campground.create(newCampground, function(err, result){
+        if(err){
+            console.log(err);
+        } else {
+            console.log(result);
+            res.redirect('campgrounds')
+        }
+    });
+    
 })
 
 app.get('/campgrounds/new', function (req, res) {
