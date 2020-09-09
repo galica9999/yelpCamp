@@ -17,7 +17,6 @@ mongoose.connect('mongodb://localhost:27017/yelpCamp', {
     .catch(error => console.log(error.message));
 
 // schema setup
-
 var campgroundSchema = new mongoose.Schema({
     name:String,
     image:String
@@ -25,14 +24,7 @@ var campgroundSchema = new mongoose.Schema({
 
 var Campground = mongoose.model("Campground", campgroundSchema);
 
-// Campground.create({name: 'Granite Hill', image: "https://images.unsplash.com/photo-1487750404521-0bc4682c48c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" }, function(err, campground){
-//     if(err){
-//         console.log(err)
-//     } else{
-//         console.log(campground);
-//     }
-// })
-
+//route setup
 app.get('/', function (req, res) {
     res.render('landing')
 })
@@ -55,7 +47,6 @@ app.post("/campgrounds", function (req, res) {
         if(err){
             console.log(err);
         } else {
-            console.log(result);
             res.redirect('campgrounds')
         }
     });
