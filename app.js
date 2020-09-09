@@ -1,10 +1,23 @@
-var express = require('express');
-var app = express();
-var request = require('request');
-var bodyParser = require("body-parser");
+var express     = require('express'), 
+    app         = express(),
+    request     = require('request'), 
+    bodyParser  = require("body-parser"),
+    mongoose    = require('mongoose');
+
+const { StringDecoder } = require('string_decoder');
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
+
+mongoose.connect('mongodb://localhost:27017/yelpCamp', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log('Connected to DB!'))
+    .catch(error => console.log(error.message));
+
+
+
 
 var campgrounds = [
     { name: 'Salmon Creek', image: "https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80" },
