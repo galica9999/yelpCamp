@@ -2,7 +2,8 @@ var express     = require('express'),
     app         = express(),
     request     = require('request'), 
     bodyParser  = require("body-parser"),
-    mongoose    = require('mongoose');
+    mongoose    = require('mongoose'),
+    Campground = require("./models/campground");
 
 const { StringDecoder } = require('string_decoder');
 
@@ -16,14 +17,6 @@ mongoose.connect('mongodb://localhost:27017/yelpCamp', {
     .then(() => console.log('Connected to DB!'))
     .catch(error => console.log(error.message));
 
-// schema setup
-var campgroundSchema = new mongoose.Schema({
-    name:String,
-    image:String,
-    description: String
-});
-
-var Campground = mongoose.model("Campground", campgroundSchema);
 
 //route setup
 app.get('/', function (req, res) {
