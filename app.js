@@ -3,7 +3,8 @@ var express     = require('express'),
     request     = require('request'), 
     bodyParser  = require("body-parser"),
     mongoose    = require('mongoose'),
-    Campground = require("./models/campground");
+    Campground = require("./models/campground"),
+    seedDB = require('./seeds');
 
 const { StringDecoder } = require('string_decoder');
 
@@ -17,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/yelpCamp', {
     .then(() => console.log('Connected to DB!'))
     .catch(error => console.log(error.message));
 
+seedDB();
 
 //route setup
 app.get('/', function (req, res) {
