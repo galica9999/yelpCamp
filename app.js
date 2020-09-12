@@ -18,7 +18,7 @@ mongoose.connect('mongodb://localhost:27017/yelpCamp', {
     .then(() => console.log('Connected to DB!'))
     .catch(error => console.log(error.message));
 
-seedDB();
+//seedDB();
 
 //route setup
 app.get('/', function (req, res) {
@@ -55,7 +55,7 @@ app.get('/campgrounds/new', function (req, res) {
 });
 
 app.get('/campgrounds/:id', function(req,res){
-    Campground.findById(req.params.id,function(err,foundCampground){
+    Campground.findById(req.params.id).populate("comments").exec(function(err,foundCampground){
         if(err){
             console.log(err);
         } else {
