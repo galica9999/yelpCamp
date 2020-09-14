@@ -69,7 +69,7 @@ app.post("/campgrounds", function (req, res) {
 
 })
 
-app.get('/campgrounds/new', function (req, res) {
+app.get('/campgrounds/new', isLoggedIn, function (req, res) {
     res.render('campgrounds/new')
 });
 
@@ -86,7 +86,7 @@ app.get('/campgrounds/:id', function (req, res) {
 // ===================================
 // ===================================
 //comment routes
-app.get('/campgrounds/:id/comments/new', function (req, res) {
+app.get('/campgrounds/:id/comments/new', isLoggedIn ,function (req, res) {
     Campground.findById(req.params.id, function (err, campground) {
         if (err) {
             console.log(err);
@@ -148,9 +148,20 @@ app.post('/login', passport.authenticate('local',
 });
 
 
+//logout route
+app.get('/logout', function(req,res){
+    req.logOut();
+    res.redirect('/campgrounds');
+});
 
-
-
+function isLoggedIn(req, res, next){
+    if(req.isAuthenticated){
+        console.log('checking');
+        return next();
+    } else {
+        res.redirect('/login');
+    }
+}
 
 
 app.listen(3000, 'localhost', function () {
