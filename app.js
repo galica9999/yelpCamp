@@ -7,21 +7,16 @@ var express = require('express'),
     seedDB = require('./seeds'),
     Comment = require('./models/comment'),
     passport = require('passport'),
-    LocalStrategy = require('passport-local'),
-    User = require('./models/user');
+    localStrategy = require('passport-local'),
+    passportLocalMongoose = require('passport-local-mongoose'),
+    User = require('./models/user.js');
 
 const { StringDecoder } = require('string_decoder');
 
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
-mongoose.connect('mongodb://localhost:27017/yelpCamp', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-    .then(() => console.log('Connected to DB!'))
-    .catch(error => console.log(error.message));
 
 //seedDB();
 
@@ -34,9 +29,18 @@ app.use(require('express-session')({
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
+app.use(bodyParser.urlencoded({extended:true}));
+
+passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+mongoose.connect('mongodb://localhost:27017/yelpCamp', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log('Connected to DB!'))
+    .catch(error => console.log(error.message));
 
 
 //route setup
@@ -96,7 +100,7 @@ app.get('/campgrounds/:id/comments/new', isLoggedIn ,function (req, res) {
     });
 });
 
-app.post('/campgrounds/:id/comments', function (req, res) {
+app.post('/campgrounds/:id/comments', isLoggedIn ,function (req, res) {
     Campground.findById(req.params.id, function (err, campground) {
         if (err) {
             console.log(err);
@@ -155,8 +159,7 @@ app.get('/logout', function(req,res){
 });
 
 function isLoggedIn(req, res, next){
-    if(req.isAuthenticated){
-        console.log('checking');
+    if(req.user){
         return next();
     } else {
         res.redirect('/login');
