@@ -5,7 +5,10 @@ var express     = require('express'),
     mongoose    = require('mongoose'),
     Campground = require("./models/campground"),
     seedDB = require('./seeds'),
-    Comment = require('./models/comment');
+    Comment = require('./models/comment'),
+    passport = require('passport'),
+    LocalStrategy = require('passport-local'),
+    User = require('./models/user');
 
 const { StringDecoder } = require('string_decoder');
 
@@ -21,6 +24,20 @@ mongoose.connect('mongodb://localhost:27017/yelpCamp', {
     .catch(error => console.log(error.message));
 
 //seedDB();
+
+// PASSPORT CONFIG
+app.use(require('express-session')({
+    secret: "this is the secret of yelpCamp",
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 //route setup
 app.get('/', function (req, res) {
@@ -96,6 +113,11 @@ app.post('/campgrounds/:id/comments', function(req,res){
             });
         }
     });
+});
+
+// AUTH routes
+app.get('/register', function(req, res){
+    res.render('register');
 })
 
 app.listen(3000, 'localhost', function () {
