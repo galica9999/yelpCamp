@@ -35,6 +35,11 @@ passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use(function(req,res,next){
+    res.locals.currentUser = req.user;
+    next();
+});
+
 mongoose.connect('mongodb://localhost:27017/yelpCamp', {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -49,11 +54,12 @@ app.get('/', function (req, res) {
 })
 
 app.get("/campgrounds", function (req, res) {
+
     Campground.find({}, function (err, allCampgrounds) {
         if (err) {
             console.log(err);
         } else {
-            res.render('campgrounds/index', { campgrounds: allCampgrounds });
+            res.render('campgrounds/index', { campgrounds: allCampgrounds});
         }
     })
 })
