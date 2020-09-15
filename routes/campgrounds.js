@@ -17,11 +17,16 @@ router.post("/", isLoggedIn, function (req, res) {
     var name = req.body.name;
     var image = req.body.image;
     var description = req.body.description;
-    var newCampground = { name: name, image: image, description: description }
+    var author = {
+        id: req.user._id,
+        username: req.user.username
+    }
+    var newCampground = { name: name, image: image, description: description, author:author}
     Campground.create(newCampground, function (err, result) {
         if (err) {
             console.log(err);
         } else {
+            console.log(result);
             res.redirect('/campgrounds')
         }
     });
