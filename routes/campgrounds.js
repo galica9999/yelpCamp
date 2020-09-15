@@ -13,7 +13,7 @@ router.get("/", function (req, res) {
     })
 })
 
-router.post("/", function (req, res) {
+router.post("/", isLoggedIn, function (req, res) {
     var name = req.body.name;
     var image = req.body.image;
     var description = req.body.description;
