@@ -38,7 +38,7 @@ router.post('/', isLoggedIn ,function (req, res) {
 });
 
 function isLoggedIn(req, res, next){
-    if(req.user){
+    if(req.isAuthenticated()){
         return next();
     } else {
         res.redirect('/login');
