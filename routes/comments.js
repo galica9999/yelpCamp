@@ -31,6 +31,7 @@ router.post('/', middleware.isLoggedIn ,function (req, res) {
                     comment.save();
                     campground.comments.push(comment);
                     campground.save();
+                    req.flash('success', 'Comment Added')
                     res.redirect('/campgrounds/' + campground._id);
                 }
             });
@@ -63,6 +64,7 @@ router.delete('/:comment_id', middleware.checkCommentOwernership, function(req,r
         if (err){
             res.redirect('back');
         } else {
+            req.flash('success', 'Comment removed')
             res.redirect('back');
         }
     });
